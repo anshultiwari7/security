@@ -48,8 +48,7 @@ class TradeViewSet(viewsets.ViewSet):
         return render(request, 'trade_list.html', { 
                 'trade_list': data, 
                 'tickers': Ticker.objects.all(), 
-                'trades_by_category': self.serializer_class(
-                    self.get_queryset().distinct('category'), many=True).data
+                'trades_by_category': dict(self.model.CATEGORY_CHOICES)
             })
 
     def retrieve(self, request, pk=None):
@@ -62,12 +61,11 @@ class TradeViewSet(viewsets.ViewSet):
             rendered HTML with trade & tickers/categories for select box
         """
         trade = get_object_or_404(self.get_queryset(), pk=pk)
-        context = { 
-            'trade': trade, 
-            'tickers': Ticker.objects.all(), 
-            'trades_by_category': self.serializer_class(
-                self.get_queryset().distinct('category'), many=True).data}
-        return render(request, 'trade_add_or_update.html', context)
+        return render(request, 'trade_add_or_update.html', { 
+                'trade': trade, 
+                'tickers': Ticker.objects.all(), 
+                'trades_by_category': dict(self.model.CATEGORY_CHOICES)
+            })
 
     def create(self, request):
 
@@ -118,9 +116,7 @@ class TradeViewSet(viewsets.ViewSet):
     def add_new(self, request):
         return render(request, 'trade_add_or_update.html', {
             'tickers': Ticker.objects.all(), 
-            'trades_by_category': self.serializer_class(
-                self.get_queryset().distinct('category'),
-                many=True).data
+            'trades_by_category': dict(self.model.CATEGORY_CHOICES)
         })
 
 

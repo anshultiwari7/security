@@ -39,9 +39,10 @@ class TradeViewSet(viewsets.ViewSet):
         html: 
             rendered HTML with trade-list & tickers/categories for select box
         """
-        if _id := request.GET.get('ticker'):
+        if request.GET.get('ticker'):
             data = self.serializer_class(
-                self.get_queryset().filter(ticker__id=_id), many=True).data
+                self.get_queryset().filter(
+                    ticker__id=request.GET.get('ticker')), many=True).data
         else:
             data = self.serializer_class(self.get_queryset(), many=True).data
         return render(request, 'trade_list.html', { 

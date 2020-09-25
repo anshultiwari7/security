@@ -65,8 +65,8 @@
     <input type="text" id="price" name="price" title="Price" value="{{ trade.price }}" placeholder="Number with maximum 2 decimal places" required><br><br>
     <label for="category">Choose a category:</label>
     <select name="category" id="category">
-      {% for trade in trades_by_category %}
-        <option value="{{ trade.category }}">{{ trade.category_name }}</option>
+      {% for category_id, category_name in trades_by_category.items %}
+        <option value="{{ category_id }}">{{ category_name }}</option>
       {% endfor %}
     </select>
     <br><br>

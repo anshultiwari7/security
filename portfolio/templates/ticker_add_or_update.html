@@ -1,0 +1,72 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    body {font-family: Arial, Helvetica, sans-serif;}
+    * {box-sizing: border-box;}
+
+    input[type=text], select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      margin-top: 6px;
+      margin-bottom: 16px;
+      resize: vertical;
+    }
+
+    input[type=submit] {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    input[type=submit]:hover {
+      background-color: #45a049;
+    }
+  </style>
+
+</head>
+<body class="container">
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'ticker-list' %}">Security</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="{% url 'ticker-list' %}">Home</a></li>
+      <li><a href="{% url 'ticker-list' %}">Tickers</a></li>
+      <li><a href="{% url 'trade-list' %}">Portfolio</a></li>
+      <li><a href="{% url 'holding-list' %}">Holdings</a></li>
+      <li><a href="{% url 'return-list' %}">Returns</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="container">
+    {% if ticker %}
+      <h3>Update Ticker</h3>
+      <form action="/portfolio/ticker/{{ ticker.id }}/update_record/" method="post">
+    {% else %}
+      <h3>Add Ticker</h3>
+      <form action="{% url 'ticker-list' %}" method="post">
+    {% endif %}
+    <label for="name">Ticker Name:</label>
+    <input type="text" id="name" name="name" value="{{ ticker.name }}" required><br><br>
+    <label for="symbol">Symbol:</label>
+    <input type="text" id="symbol" name="symbol" value="{{ ticker.symbol }}" required><br><br>
+    <br><br>
+    <input type="submit" value="Submit">
+  </form>
+</div>
+
+</body>
+</html>

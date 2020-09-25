@@ -1,0 +1,71 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="container">
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'ticker-list' %}">Security</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="{% url 'ticker-list' %}">Home</a></li>
+      <li><a href="{% url 'ticker-list' %}">Tickers</a></li>
+      <li><a href="{% url 'trade-list' %}">Portfolio</a></li>
+      <li><a href="{% url 'holding-list' %}">Holdings</a></li>
+      <li><a href="{% url 'return-list' %}">Returns</a></li>
+    </ul>
+  </div>
+</nav>  
+<h1>Holdings</h1>
+ <table class="table">
+  <caption>Holding List</caption>
+  {% if evaluated %}
+    Show as <a href="{% url 'holding-list' %}?evaluated=0" class="btn btn-danger">Unevaluated</a>
+  {% else %}
+    Show as <a href="{% url 'holding-list' %}" class="btn btn-success">Evaluated</a>
+  {% endif %}
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Ticker Name</th>
+      <th scope="col">Ticker Symbol</th>
+      <th scope="col">Final Quantity/Shares</th>
+      <th scope="col">Average Buy Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for holding in holding_list %}
+      <tr>
+        <td scope="row">{{forloop.counter}}</td>
+        <td>{{ holding.name|title }}</td>
+        <td>{{ holding.symbol }}</td>
+        <td>{{ holding.final_quantity }}</td>
+        <td>{{ holding.avg_buy_price }}</td>
+      </tr>
+    {% empty %}
+      <p>No holdings yet.</p>
+    {% endfor %}
+  </tbody>
+</table>
+ {% if is_paginated %}
+    <div class="pagination">
+        <span class="page-links">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+            <span class="page-current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+            {% endif %}
+        </span>
+    </div>
+  {% endif %} 
+</html>

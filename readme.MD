@@ -2,11 +2,11 @@
 #Security
 
 Setup-
-  - Required Python3.8.5 - Project created upon.
+  - Required Python 3.8.5 - Project created upon.
   - Create virtual environment - python3 -m venv <venv-name>
   - Install requirements.txt residing in security project directory.
   - Connect with database PostgreSQL suggested (project tested upon PostgreSQL 12.4).
-  - Read ER-diagram residing in security project as er-diagram.png.
+  - Read ER Diagram residing in security project as er-diagram.png.
  
  
  

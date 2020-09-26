@@ -70,29 +70,31 @@ class TickerManager(models.Manager):
         for qs in queryset:
             try:
                 if qs.get('trade__category') == Trade.CATEGORY_BOUGHT:
-                    holdings[qs.get('id')]['final_quantity'] += qs.get('final_quantity')
-                    if holdings[qs.get('id')]['avg_buy_price']:
+                    if holdings[qs.get('id')].get('avg_buy_price'):
                         holdings[qs.get('id')]['avg_buy_price'] = ' + '.join([ 
                             holdings[qs.get('id')]['avg_buy_price'],
                             '*'.join([str(qs.get('trade__price')),
                             str(qs.get('final_quantity'))])]
                         )
-                        if holdings[qs.get('id')]['divider']:
-                            holdings[qs.get('id')]['divider'] = ' + '.join([
-                                holdings[qs.get('id')]['divider'],
-                                str(qs.get('final_quantity'))]
-                            )
-                    elif qs.get('trade__category'):
+                        holdings[qs.get('id')]['divider'] = ' + '.join([
+                            holdings[qs.get('id')]['divider'],
+                            str(qs.get('final_quantity'))]
+                        )
+                    else:
                         holdings[qs.get('id')]['avg_buy_price'] = ' + '.join([
                             '*'.join([str(qs.get('trade__price')),
                             str(qs.get('final_quantity'))])]
                         )
                         holdings[qs.get('id')]['divider'] = str(qs.get('final_quantity'))
                 if qs.get('trade__category') == Trade.CATEGORY_SOLD:
-                    holdings[qs.get('id')]['sold'] += qs.get('final_quantity')
+                    try:
+                        holdings[qs.get('id')]['sold'] += qs.get('final_quantity')
+                    except:
+                        holdings[qs.get('id')]['sold'] = qs.get('final_quantity')
                 holdings[qs.get('id')]['id'] = qs.get('name')
                 holdings[qs.get('id')]['name'] = qs.get('name')
                 holdings[qs.get('id')]['symbol'] = qs.get('symbol')
+                holdings[qs.get('id')]['final_quantity'] += qs.get('final_quantity')
             except:
                 holdings[qs.get('id')] = {}
                 holdings[qs.get('id')]['id'] = qs.get('name')
@@ -100,7 +102,7 @@ class TickerManager(models.Manager):
                 holdings[qs.get('id')]['final_quantity'] = qs.get('final_quantity')
                 holdings[qs.get('id')]['avg_buy_price'] = 0
                 holdings[qs.get('id')]['divider'] = ''
-                if ((qs.get('trade__price') or qs.get('trade__price') == 0) and 
+                if (qs.get('trade__price') or (qs.get('trade__price') == 0) and 
                         qs.get('trade__category') == Trade.CATEGORY_BOUGHT):
                     holdings[qs.get('id')]['avg_buy_price'] = ' + '.join([
                         '*'.join([str(qs.get('trade__price')), 
@@ -113,18 +115,16 @@ class TickerManager(models.Manager):
                 holdings[qs.get('id')]['name'] = qs.get('name')
                 holdings[qs.get('id')]['symbol'] = qs.get('symbol')
         for k, v in holdings.items():
-            v['current_quantity'] = ''
             if v.get('divider'):
                 v['avg_buy_price'] = '/'.join([
                     ''.join(['(', v['avg_buy_price'], ')']), 
                     ''.join(['(', v['divider'], ')'])
                 ])
-                v['current_quantity'] = eval(str(v['divider']))
             if evaluated:
                 v['avg_buy_price'] = '%.2f'%eval(str(v['avg_buy_price']))
             if isinstance(v['avg_buy_price'], int):
                 v['avg_buy_price'] = '%.2f'%v['avg_buy_price']
-            v['final_quantity'] -= v.get('sold', 0)
+            v['final_quantity'] -= v.get('sold') or 0
             holdings_data.append(v)
         return holdings_data
 

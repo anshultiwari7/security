@@ -24,7 +24,7 @@
 </nav>  
 <h1>Portfolio</h1>
 {% for error, error_message in errors.items %}
-    Invalid value for: {{ error }}
+    {{ error }}: {{ error_message }}
     <br>
 {% endfor %}
 <p>Error</p>

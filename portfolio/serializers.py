@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from portfolio.models import Ticker, Trade
 
 
@@ -39,6 +39,16 @@ class TradeSerializer(serializers.ModelSerializer):
             'id', 'category', 'ticker_id', 'quantity',
             'price', 'ticker_name', 'ticker_symbol', 'category_name'
         )
+
+    def validate(self, data):
+        bought_qty = Trade.objects.filter(
+            category=Trade.CATEGORY_BOUGHT).aggregate(
+            bought_qty=Count('quantity')).get('bought_qty', 0)
+        if (data['category'] == Trade.CATEGORY_SOLD 
+            and data['quantity'] > bought_qty):
+            raise serializers.ValidationError({
+                'Quantity': 'Quantity to sell available {bought_qty}' \
+                .format(bought_qty=bought_qty)})
 
     def get_ticker_name(self, instance):
         return instance.ticker.name

@@ -36,6 +36,7 @@
       <th scope="col">Ticker Name</th>
       <th scope="col">Ticker Symbol</th>
       <th scope="col">Final Quantity/Shares</th>
+      <th scope="col">Quantity</th>
       <th scope="col">Average Buy Price</th>
     </tr>
   </thead>
@@ -45,6 +46,7 @@
         <td scope="row">{{forloop.counter}}</td>
         <td>{{ holding.name|title }}</td>
         <td>{{ holding.symbol }}</td>
+        <td>{{ holding.current_quantity }}</td>
         <td>{{ holding.final_quantity }}</td>
         <td>{{ holding.avg_buy_price }}</td>
       </tr>

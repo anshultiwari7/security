@@ -88,6 +88,8 @@ class TickerManager(models.Manager):
                             str(qs.get('final_quantity'))])]
                         )
                         holdings[qs.get('id')]['divider'] = str(qs.get('final_quantity'))
+                if qs.get('trade__category') == Trade.CATEGORY_SOLD:
+                    holdings[qs.get('id')]['sold'] += qs.get('final_quantity')
                 holdings[qs.get('id')]['id'] = qs.get('name')
                 holdings[qs.get('id')]['name'] = qs.get('name')
                 holdings[qs.get('id')]['symbol'] = qs.get('symbol')
@@ -98,13 +100,15 @@ class TickerManager(models.Manager):
                 holdings[qs.get('id')]['final_quantity'] = qs.get('final_quantity')
                 holdings[qs.get('id')]['avg_buy_price'] = 0
                 holdings[qs.get('id')]['divider'] = ''
-                if (qs.get('trade__price') and 
+                if ((qs.get('trade__price') or qs.get('trade__price') == 0) and 
                         qs.get('trade__category') == Trade.CATEGORY_BOUGHT):
                     holdings[qs.get('id')]['avg_buy_price'] = ' + '.join([
                         '*'.join([str(qs.get('trade__price')), 
                         str(qs.get('final_quantity'))])]
                     )
                     holdings[qs.get('id')]['divider'] = str(qs.get('final_quantity'))
+                if qs.get('trade__category') == Trade.CATEGORY_SOLD:
+                    holdings[qs.get('id')]['sold'] = qs.get('final_quantity')
                 holdings[qs.get('id')]['id'] = qs.get('name')
                 holdings[qs.get('id')]['name'] = qs.get('name')
                 holdings[qs.get('id')]['symbol'] = qs.get('symbol')
@@ -120,6 +124,7 @@ class TickerManager(models.Manager):
                 v['avg_buy_price'] = '%.2f'%eval(str(v['avg_buy_price']))
             if isinstance(v['avg_buy_price'], int):
                 v['avg_buy_price'] = '%.2f'%v['avg_buy_price']
+            v['final_quantity'] -= v.get('sold', 0)
             holdings_data.append(v)
         return holdings_data
 

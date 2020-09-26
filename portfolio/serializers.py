@@ -59,7 +59,6 @@ class HoldingSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     avg_buy_price = serializers.SerializerMethodField(read_only=True)
     final_quantity = serializers.SerializerMethodField(read_only=True)
-    current_quantity = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Ticker

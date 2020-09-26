@@ -64,7 +64,7 @@ class HoldingSerializer(serializers.ModelSerializer):
         model = Ticker
         fields = (
             'id', 'name', 'symbol', 
-            'final_quantity', 'avg_buy_price', 'current_quantity'
+            'final_quantity', 'avg_buy_price'
         )
 
     def get_avg_buy_price(self, instance):
@@ -73,8 +73,6 @@ class HoldingSerializer(serializers.ModelSerializer):
     def get_final_quantity(self, instance):
         return instance.get('final_quantity')
 
-    def get_current_quantity(self, instance):
-        return instance.get('current_quantity')
 
 class ReturnSerializer(serializers.ModelSerializer):
     

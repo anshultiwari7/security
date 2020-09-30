@@ -56,3 +56,4 @@ Assumptions and extras -
   - Values for returns can be negative on Returns List page.
   - Price can be 0 for a trade
   - Holdings list is needed to be represented with avg_buy_price as computed or non-computed string (un-evaluated).
+  - A trade cannot be added with Quantity less than the Quantity available (bought - sold) for a particular security/ticker.

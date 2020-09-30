@@ -24,7 +24,10 @@
 </nav>  
 <h1>Portfolio</h1>
 {% for error, error_message in errors.items %}
-    {{ error }}: {{ error_message }}
+    {{ error }}: 
+    {% for error_msg in error_message %}
+      {{ error_msg }}
+    {% endfor %}
     <br>
 {% endfor %}
 <p>Error</p>

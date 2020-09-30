@@ -41,14 +41,23 @@ class TradeSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, data):
-        bought_qty = Trade.objects.filter(
-            category=Trade.CATEGORY_BOUGHT).aggregate(
-            bought_qty=Count('quantity')).get('bought_qty', 0)
-        if (data['category'] == Trade.CATEGORY_SOLD 
-            and data['quantity'] > bought_qty):
-            raise serializers.ValidationError({
-                'Quantity': 'Quantity to sell available {bought_qty}' \
-                .format(bought_qty=bought_qty)})
+        data = super(TradeSerializer, self).validate(data)
+        trades = Trade.objects.filter(
+            ticker__id=data['ticker_id'])
+        bought_qty = trades.filter(category=Trade.CATEGORY_BOUGHT).aggregate(
+            bought_qty=Sum('quantity')).get('bought_qty') or 0
+        sold_qty = trades.filter(category=Trade.CATEGORY_SOLD).aggregate(
+            sold_qty=Sum('quantity')).get('sold_qty') or 0
+        available_qty = bought_qty - sold_qty
+        if data['category'] == Trade.CATEGORY_SOLD:
+            if available_qty == 0:
+                raise serializers.ValidationError({
+                    'Quantity': 'No quantity available to sell'})
+            if data['quantity'] > available_qty:
+                raise serializers.ValidationError({
+                    'Quantity': 'Available quantity to sell {available_qty}' \
+                    .format(available_qty=available_qty)})
+        return data
 
     def get_ticker_name(self, instance):
         return instance.ticker.name
